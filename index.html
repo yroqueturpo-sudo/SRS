@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ChismeX — Demo gótico</title>
+
+<!-- Tipografía gótica (Google Fonts) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0a0f1a; --panel:rgba(16,23,37,.7); --card:rgba(13,20,34,.78); --line:#22365a;
+  --text:#eaf0ff; --muted:#9bb2d9; --brand:#35b6ff; --brand-600:#2699d6;
+  --danger:#ff6b6b; --ok:#74e39f; --ring:0 0 0 3px color-mix(in oklab,var(--brand),transparent 70%);
+  --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.35);
+  --glass:saturate(140%) blur(10px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:
+    radial-gradient(1200px 500px at -10% 0%, #14376355, transparent 50%),
+    radial-gradient(1000px 500px at 120% 10%, #1f6aa855, transparent 50%),
+    var(--bg);
+  color:var(--text);
+  font:18px/1.55 "UnifrakturCook","UnifrakturMaguntia",serif;
+  letter-spacing:.3px;
+}
+.wrap{max-width:1060px;margin:auto;padding:16px}
+
+/* Topbar */
+.topbar{position:sticky;top:0;z-index:30;border-bottom:1px solid #ffffff30;
+  background:linear-gradient(90deg,var(--brand),#7ad4ff);backdrop-filter:var(--glass)}
+.topbar .wrap{display:flex;gap:14px;align-items:center}
+.logo{margin:0;font-size:1.6rem;color:#062a3e}
+.nav{margin-left:auto;display:flex;gap:10px}
+.pill{background:#ffffff33;color:#012133;border:1px solid #ffffff55;padding:6px 12px;border-radius:999px;display:inline-flex;gap:8px;align-items:center;cursor:pointer;transition:.25s}
+.pill:hover{transform:translateY(-1px);background:#ffffff55}
+
+/* Botones & inputs */
+.controls{display:grid;grid-template-columns:1fr 200px 160px 140px;gap:10px;margin:14px 0}
+.input,.btn{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);outline:none;transition:.25s;font:inherit}
+.input:focus{box-shadow:var(--ring);border-color:var(--brand)}
+.btn{background:linear-gradient(180deg,var(--brand),var(--brand-600));border:none;color:#032132;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 14px rgba(3,27,78,.25)}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid #2a3a59;box-shadow:none}
+.btn.danger{border:1px solid var(--danger);color:var(--danger);background:transparent}
+.btn.small{padding:6px 10px;border-radius:999px;font-size:1rem}
+
+/* Tarjetas */
+.card{backdrop-filter:var(--glass);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}
+@media (max-width:1060px){.list{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:700px){.list{grid-template-columns:1fr}}
+
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;transition:transform .2s, box-shadow .2s}
+.item:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.15)}
+.item h3{margin:0 0 4px;font-size:1.3rem}
+.meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:1.05rem}
+.badge{background:#12223b;border:1px solid #1f3050;color:#9fd7ff;padding:2px 8px;border-radius:999px}
+.actions{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.counter{font-size:1.05rem;color:var(--muted)}
+.owner{color:var(--ok)}
+.pinned{outline:2px dashed var(--brand-600);outline-offset:6px;border-radius:18px}
+
+/* Top list */
+.topstrip{display:flex;gap:12px;overflow:auto;padding-bottom:6px}
+.topcard{min-width:260px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+.topcard h4{margin:0 0 6px}
+.topcard .mini{font-size:1.05rem;color:#a9bfdd}
+
+/* Form imagen */
+.preview{display:flex;gap:10px;align-items:center;margin-top:8px}
+.preview img{max-width:160px;border-radius:10px;border:1px solid #243659}
+
+/* Comentarios inline */
+.cm-box{border-top:1px dashed #2a3e62;padding-top:8px}
+.cm-form{display:flex;gap:8px;margin-top:8px}
+.cm-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.comment{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:12px;padding:8px}
+.comment .cmeta{font-size:1.05rem;color:var(--muted);display:flex;gap:8px}
+
+/* Footer + disclaimer */
+.footer{color:var(--muted);text-align:center;padding:26px}
+.footer .disclaimer{
+  display:block;margin-top:10px;padding:10px 12px;border:1px solid #2a3a59;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+  font-size:1.1rem;letter-spacing:.5px
+}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:#111c2e;color:#dff2ff;border:1px solid #2a3b5c;padding:10px 14px;border-radius:10px;opacity:0;visibility:hidden;transition:opacity .3s;z-index:1000}
+.toast.show{opacity:1;visibility:visible}
+
+/* Icono anim pin */
+@keyframes pinBounce{0%{transform:translateY(0)}30%{transform:translateY(-4px)}60%{transform:translateY(0)}}
+.pin-anim{animation:pinBounce .4s ease}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <h1 class="logo">ChismeX — Demo Gótico</h1>
+    <div class="nav">
+      <span id="who" class="pill">Anon</span>
+      <span id="adminPwdBtn" class="pill" title="Modo Admin con contraseña">Admin clave</span>
+      <span id="adminBadge" class="pill" style="display:none">Admin</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card" style="margin:12px 0">
+    Publica con respeto. Sin datos personales, contactos ni enlaces.
+  </div>
+
+  <!-- Controles -->
+  <section class="controls">
+    <input id="q" class="input" type="search" placeholder="Buscar chisme…">
+    <select id="cat" class="input">
+      <option value="todas">Todas</option>
+      <option value="colegio">Colegio</option>
+      <option value="farandula">Farándula</option>
+      <option value="gaming">Gaming</option>
+      <option value="random">Random</option>
+    </select>
+    <button id="newBtn" class="btn" type="button">Nuevo chisme</button>
+    <button id="clearSearch" class="btn ghost" type="button">Limpiar</button>
+  </section>
+
+  <!-- Top chismes -->
+  <section class="card">
+    <h2 style="margin:0 0 8px">🔥 Top chismes (más likes)</h2>
+    <div id="topList" class="topstrip"></div>
+  </section>
+
+  <!-- Form -->
+  <section class="card" style="margin-top:12px">
+    <h2 style="margin:0 0 8px"><span id="formTitle">Publicar chisme</span></h2>
+    <form id="form">
+      <div class="grid3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        <label>Título
+          <input name="titulo" class="input" required placeholder="Ej: Bombazo en el recreo">
+        </label>
+        <label>Categoría
+          <select name="categoria" class="input" required>
+            <option value="colegio">Colegio</option>
+            <option value="farandula">Farándula</option>
+            <option value="gaming">Gaming</option>
+            <option value="random">Random</option>
+          </select>
+        </label>
+        <label>Imagen (opcional)
+          <input id="imgInput" class="input" type="file" accept="image/*">
+        </label>
+      </div>
+      <label>Detalle
+        <textarea name="detalle" class="input" rows="4" required placeholder="Cuenta el chisme con respeto y sin datos sensibles…"></textarea>
+      </label>
+      <div class="preview" id="preview" hidden>
+        <span>Vista previa:</span>
+        <img id="previewImg" alt="">
+        <button id="clearImg" type="button" class="btn small ghost">Quitar imagen</button>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn" type="submit" id="publishBtn">Guardar</button>
+        <button id="cancelEdit" class="btn ghost" type="button" hidden>Cancelar edición</button>
+        <button class="btn ghost" type="reset">Limpiar</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Feed -->
+  <section style="margin-top:12px">
+    <h2 style="margin:0 0 8px">🗞️ Últimos chismes <small id="count" style="color:var(--muted)"></small></h2>
+    <div id="feed" class="list"></div>
+    <p id="empty" class="empty" style="color:var(--muted);text-align:center;margin:20px 0" hidden>No hay chismes aún. ¡Sé el primero!</p>
+  </section>
+</main>
+
+<footer class="footer">
+  Hecho por <strong>jaswall</strong> 💻
+  <span class="disclaimer">Aviso: el creador no se hace responsable por los contenidos publicados por los usuarios. Publica con respeto.</span>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ======= DEMO localStorage (sin servidor) ======= */
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const toast=$('#toast'); const notify=m=>{toast.textContent=m;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const escapeHTML=s=>(s||'').toString().replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;","&gt;":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+const nowISO=()=>new Date().toISOString();
+const fmt=d=>new Date(d).toLocaleString('es-PE',{dateStyle:'medium',timeStyle:'short'});
+
+const who=$('#who'), adminPwdBtn=$('#adminPwdBtn'), adminBadge=$('#adminBadge');
+const q=$('#q'), cat=$('#cat'), feed=$('#feed'), empty=$('#empty'), count=$('#count');
+const topList=$('#topList'), form=$('#form'), formTitle=$('#formTitle');
+const imgInput=$('#imgInput'), preview=$('#preview'), previewImg=$('#previewImg'), clearImg=$('#clearImg');
+const cancelEdit=$('#cancelEdit'), newBtn=$('#newBtn'), clearSearch=$('#clearSearch');
+
+let CURRENT_UID = localStorage.getItem('demo_uid') || (localStorage.setItem('demo_uid', uid()), localStorage.getItem('demo_uid'));
+let IS_ADMIN=false;
+const ADMIN_PASS="40719140";
+
+adminPwdBtn.addEventListener('click', ()=>{
+  const p = prompt('Clave de administrador:');
+  if(p===ADMIN_PASS){ IS_ADMIN=true; adminBadge.style.display='inline-flex'; notify('Admin activado'); renderAll(); }
+  else if(p!==null) notify('Clave incorrecta');
+});
+
+/* Persistencia */
+const K='chismex_demo_v2';
+const KL='chismex_demo_likes_'+CURRENT_UID;
+const KC='chismex_demo_comments_v2';
+const get=(k,f)=>{ try{const v=JSON.parse(localStorage.getItem(k)||'null'); return v??f;}catch{return f;} };
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let state=get(K,null);
+if(!state){
+  state={posts:[
+    {id:uid(), title:'¡Recreo movido!', category:'colegio', detail:'Dicen que el viernes habrá concurso sorpresa 👀', imgUrl:null, likes:5, pinned:true, pinnedAt:nowISO(), ownerUid:'seed', createdAt:nowISO()},
+    {id:uid(), title:'Streaming secreto', category:'gaming', detail:'Un streamer visita el server a las 9pm.', imgUrl:null, likes:2, pinned:false, ownerUid:'seed', createdAt:nowISO()}
+  ]};
+  set(K,state);
+}
+let likesByUser=get(KL,{});
+let comments=get(KC,{}); // {postId:[{id,text,uid,createdAt}]}
+const save=()=>set(K,state);
+const saveLikes=()=>set(KL,likesByUser);
+const saveComments=()=>set(KC,comments);
+
+/* Imagen (compresión) */
+function readFile(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(file);});}
+async function resizeDataURL(dataURL,max=1200,q=.82){
+  const img=new Image(); await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=dataURL;});
+  const w=img.width,h=img.height, s=Math.min(1,max/Math.max(w,h));
+  const c=document.createElement('canvas'); c.width=Math.round(w*s); c.height=Math.round(h*s);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',q);
+}
+let pendingImageDataURL=null;
+
+/* Render */
+function getFiltered(){
+  const t=q.value.trim().toLowerCase(); const c=cat.value;
+  return [...state.posts]
+    .filter(p=>c==='todas'||p.category===c)
+    .filter(p=>((p.title||'')+' '+(p.detail||'')).toLowerCase().includes(t))
+    .sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||new Date(b.createdAt)-new Date(a.createdAt));
+}
+function renderTop(){
+  topList.innerHTML='';
+  const top=[...state.posts].sort((a,b)=>(b.likes||0)-(a.likes||0)).slice(0,5);
+  for(const p of top){
+    const el=document.createElement('div'); el.className='topcard';
+    el.innerHTML=`<h4>${escapeHTML(p.title)}</h4>
+      <div class="mini">#${p.category} · ${(p.likes||0)} ❤️</div>
+      ${p.imgUrl?`<img src="${p.imgUrl}" alt="" style="width:100%;border-radius:10px;margin-top:6px;border:1px solid #22385d">`:''}`;
+    topList.appendChild(el);
+  }
+}
+function renderFeed(){
+  const arr=getFiltered(); feed.innerHTML='';
+  if(arr.length===0){ empty.hidden=false; count.textContent='(0)'; return; }
+  empty.hidden=true; count.textContent=`(${arr.length})`;
+  for(const p of arr){
+    const isOwner = p.ownerUid===CURRENT_UID;
+    const list = comments[p.id]||[];
+    const el=document.createElement('article'); el.className='item'; el.dataset.id=p.id;
+    if(p.pinned) el.classList.add('pinned');
+    el.innerHTML=`
+      <h3>${p.pinned?'📌 ':''}${escapeHTML(p.title)}</h3>
+      <div class="meta">
+        <span class="badge">#${p.category}</span>
+        <span>· ${fmt(p.createdAt)}</span>
+        ${isOwner?'<span class="owner">· Tú</span>':''}
+        ${(!isOwner&&IS_ADMIN)?'<span class="owner">· Admin</span>':''}
+      </div>
+      ${p.imgUrl?`<img src="${p.imgUrl}" alt="" style="width:100%;border-radius:10px;border:1px solid #22385d">`:''}
+      <p style="margin:4px 0 0">${escapeHTML(p.detail)}</p>
+
+      <div class="actions">
+        <div class="counter">❤️ <span class="likes">${p.likes||0}</span> · 💬 <span>${list.length}</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn small like" type="button">Me gusta</button>
+          <button class="btn small ghost share" type="button">Compartir</button>
+          <button class="btn small ghost pin" type="button" data-enabled="${IS_ADMIN?1:0}">${p.pinned?'Quitar pin':'Fijar'}</button>
+          ${(isOwner||IS_ADMIN)?'<button class="btn small" type="button">Editar</button>':''}
+          ${(isOwner||IS_ADMIN)?'<button class="btn small danger del" type="button">Borrar</button>':''}
+        </div>
+      </div>
+
+      <!-- Comentarios inline -->
+      <div class="cm-box">
+        <div class="cm-list">
+          ${list.map(c=>`
+            <div class="comment" data-cid="${c.id}">
+              <div class="cmeta"><span>${c.uid===CURRENT_UID?'Tú':'Anon'}</span><span>· ${fmt(c.createdAt)}</span></div>
+              <div>${escapeHTML(c.text)}</div>
+              ${(c.uid===CURRENT_UID||IS_ADMIN)?'<div style="margin-top:6px"><button class="btn small danger cdel" type="button" data-cid="'+c.id+'">Borrar</button></div>':''}
+            </div>
+          `).join('')}
+        </div>
+        <form class="cm-form" data-for="${p.id}">
+          <input class="input cm-input" placeholder="Escribe un comentario…" required>
+          <button class="btn small" type="submit">Comentar</button>
+        </form>
+      </div>
+    `;
+    feed.appendChild(el);
+  }
+}
+function renderAll(){ renderTop(); renderFeed(); }
+
+/* Eventos generales */
+q.addEventListener('input', renderFeed);
+cat.addEventListener('change', renderFeed);
+newBtn.addEventListener('click', ()=>window.scrollTo({top:form.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}));
+clearSearch.addEventListener('click', ()=>{ q.value=''; cat.value='todas'; renderFeed(); });
+
+/* Form crear/editar */
+let editingId=null;
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd=new FormData(form);
+  const title=(fd.get('titulo')||'').toString().trim();
+  const category=(fd.get('categoria')||'random').toString();
+  const detail=(fd.get('detalle')||'').toString().trim();
+  if(title.length<4) return notify('Título mínimo 4 caracteres');
+  if(detail.length<10) return notify('Cuenta un poco más el chisme (≥10)');
+  let imgUrl=null; if(pendingImageDataURL) imgUrl=pendingImageDataURL;
+
+  if(editingId){
+    const p=state.posts.find(x=>x.id===editingId); if(!p) return;
+    if(!(p.ownerUid===CURRENT_UID||IS_ADMIN)) return notify('No puedes editar este chisme');
+    p.title=title; p.category=category; p.detail=detail;
+    if(pendingImageDataURL!==null) p.imgUrl=imgUrl;
+    notify('Chisme actualizado ✅');
+  }else{
+    state.posts.unshift({id:uid(), title, category, detail, imgUrl, likes:0, pinned:false, ownerUid:CURRENT_UID, createdAt:nowISO()});
+    notify('Chisme publicado ✅');
+  }
+  save(); resetFormUI(); renderAll();
+});
+function resetFormUI(){ form.reset(); imgInput.value=''; preview.hidden=true; pendingImageDataURL=null; editingId=null; formTitle.textContent='Publicar chisme'; cancelEdit.hidden=true; }
+cancelEdit.addEventListener('click', resetFormUI);
+
+/* Imagen */
+imgInput.addEventListener('change', async (e)=>{
+  const f=e.target.files?.[0]; if(!f){ pendingImageDataURL=null; preview.hidden=true; return; }
+  try{ const raw=await readFile(f); const resized=await resizeDataURL(raw,1200,.82); pendingImageDataURL=resized; previewImg.src=resized; preview.hidden=false; }
+  catch(err){ console.error(err); notify('No se pudo procesar la imagen'); }
+});
+clearImg.addEventListener('click', ()=>{ pendingImageDataURL=null; imgInput.value=''; preview.hidden=true; });
+
+/* Feed delegado: like / share / pin / editar / borrar / comentar / borrar comentario */
+feed.addEventListener('click', (e)=>{
+  const card=e.target.closest('.item'); if(!card) return; const id=card.dataset.id;
+  const post=state.posts.find(p=>p.id===id); if(!post) return;
+  const isOwner=post.ownerUid===CURRENT_UID;
+
+  // Like
+  if(e.target.closest('.like')){
+    const LK='like_'+id+'_'+CURRENT_UID; if(likesByUser[LK]){ notify('Ya le diste like 🫶'); return; }
+    post.likes=(post.likes||0)+1; likesByUser[LK]=true; saveLikes(); save(); card.querySelector('.likes').textContent=post.likes; renderTop(); return;
+  }
+
+  // Compartir
+  if(e.target.closest('.share')){
+    const url=`${location.origin}${location.pathname}#post=${id}`;
+    navigator.clipboard?.writeText(url).then(()=>notify('🔗 Enlace copiado')).catch(()=>{ prompt('Copia el enlace:',url); });
+    return;
+  }
+
+  // Fijar / Quitar pin
+  if(e.target.closest('.pin')){
+    if(!IS_ADMIN){ notify('Activa "Admin clave" para fijar'); return; }
+    post.pinned=!post.pinned; if(post.pinned) post.pinnedAt=nowISO();
+    save(); notify(post.pinned?'📌 Fijado arriba':'📌 Pin quitado');
+    const btn=e.target.closest('.pin'); btn.classList.add('pin-anim'); setTimeout(()=>btn.classList.remove('pin-anim'),400);
+    renderAll(); return;
+  }
+
+  // Borrar
+  if(e.target.closest('.del')){
+    if(!(isOwner||IS_ADMIN)) return notify('No puedes borrar este chisme');
+    if(confirm('¿Borrar este chisme?')){ state.posts=state.posts.filter(p=>p.id!==id); delete comments[id]; save(); saveComments(); renderAll(); }
+    return;
+  }
+
+  // Editar
+  if(e.target.textContent.trim()==='Editar'){
+    if(!(isOwner||IS_ADMIN)) return notify('No puedes editar este chisme');
+    form.elements.titulo.value=post.title; form.elements.categoria.value=post.category; form.elements.detalle.value=post.detail;
+    if(post.imgUrl){ previewImg.src=post.imgUrl; preview.hidden=false; } else { preview.hidden=true; }
+    editingId=id; formTitle.textContent='Editar chisme'; cancelEdit.hidden=false;
+    window.scrollTo({top:0,behavior:'smooth'}); return;
+  }
+
+  // Borrar comentario
+  if(e.target.classList.contains('cdel')){
+    const cid=e.target.dataset.cid; const arr=comments[id]||[];
+    const c=arr.find(x=>x.id===cid); if(!c) return;
+    if(!(c.uid===CURRENT_UID||IS_ADMIN)) return notify('No puedes borrar este comentario');
+    comments[id]=arr.filter(x=>x.id!==cid); saveComments(); renderAll(); return;
+  }
+});
+
+/* Comentarios: submit (delegado) */
+feed.addEventListener('submit', (e)=>{
+  if(!e.target.classList.contains('cm-form')) return;
+  e.preventDefault();
+  const pid=e.target.getAttribute('data-for'); const input=e.target.querySelector('.cm-input');
+  const text=(input.value||'').trim(); if(text.length<2) return;
+  const arr=comments[pid]||(comments[pid]=[]);
+  arr.push({id:uid(), text, uid:CURRENT_UID, createdAt:nowISO()});
+  input.value=''; saveComments(); renderAll();
+});
+
+/* Inicial */
+who.textContent='Anon · Demo';
+renderAll();
+</script>
+</body>
+</html>
